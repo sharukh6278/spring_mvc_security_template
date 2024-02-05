@@ -1,0 +1,846 @@
+Index: Friday Spring/src/main/java/org/spring/security/repository/BookRepositoryCustomImp.java
+===================================================================
+diff --git a/Friday Spring/src/main/java/org/spring/security/repository/BookRepositoryCustomImp.java b/Friday Spring/src/main/java/org/spring/security/repository/BookRepositoryCustomImp.java
+deleted file mode 100644
+--- a/Friday Spring/src/main/java/org/spring/security/repository/BookRepositoryCustomImp.java	(revision de3afa3d3beb56798b12377bdae6987526e37667)
++++ /dev/null	(revision de3afa3d3beb56798b12377bdae6987526e37667)
+@@ -1,22 +0,0 @@
+-package org.spring.security.repository;
+-
+-import org.spring.security.beans.Book;
+-import org.springframework.beans.factory.annotation.Autowired;
+-import org.springframework.data.mongodb.core.MongoTemplate;
+-import org.springframework.data.mongodb.core.mapping.Document;
+-import org.springframework.data.mongodb.core.query.Criteria;
+-import org.springframework.data.mongodb.repository.Query;
+-import org.springframework.stereotype.Component;
+-
+-import java.util.ArrayList;
+-import java.util.List;
+-
+-@Component
+-public class BookRepositoryCustomImp {
+-    @Autowired
+-    MongoTemplate mongoTemplate;
+-
+-    public Book getBookById(String id){
+-       return mongoTemplate.findById(id,Book.class);
+-    }
+-}
+Index: Friday Spring/src/main/java/org/spring/security/repository/UserRepositoryCustomImp.java
+===================================================================
+diff --git a/Friday Spring/src/main/java/org/spring/security/repository/UserRepositoryCustomImp.java b/Friday Spring/src/main/java/org/spring/security/repository/UserRepositoryCustomImp.java
+deleted file mode 100644
+--- a/Friday Spring/src/main/java/org/spring/security/repository/UserRepositoryCustomImp.java	(revision de3afa3d3beb56798b12377bdae6987526e37667)
++++ /dev/null	(revision de3afa3d3beb56798b12377bdae6987526e37667)
+@@ -1,18 +0,0 @@
+-package org.spring.security.repository;
+-
+-import org.spring.security.beans.Book;
+-import org.springframework.beans.factory.annotation.Autowired;
+-import org.springframework.data.mongodb.core.MongoTemplate;
+-import org.springframework.stereotype.Component;
+-
+-@Component
+-public abstract class UserRepositoryCustomImp implements UserRepository{
+-
+-    @Autowired
+-    MongoTemplate mongoTemplate;
+-    public Book getBookListByEmail(String email){
+-
+-        return null;
+-
+-    }
+-}
+Index: Friday Spring/src/main/java/org/spring/security/repository/UserRepository.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Friday Spring/src/main/java/org/spring/security/repository/UserRepository.java b/Friday Spring/src/main/java/org/spring/security/repository/UserRepository.java
+--- a/Friday Spring/src/main/java/org/spring/security/repository/UserRepository.java	(revision de3afa3d3beb56798b12377bdae6987526e37667)
++++ b/Friday Spring/src/main/java/org/spring/security/repository/UserRepository.java	(date 1671279358212)
+@@ -1,17 +1,13 @@
+ package org.spring.security.repository;
+ 
+-import org.spring.security.beans.Book;
++
+ import org.spring.security.beans.User;
+ import org.springframework.data.jpa.repository.JpaRepository;
+-import org.springframework.data.mongodb.repository.MongoRepository;
+ import org.springframework.stereotype.Repository;
+ 
+ @Repository
+-public interface UserRepository extends MongoRepository<User,Long> {
++public interface UserRepository extends JpaRepository<User,Long> {
+     User findByEmail(String email);
+     User findByEmailAndPassword(String email,String Password);
+-    //public User findByUserNameAndPassword(String userName, String password);
+-
+-    //Book getBookListByEmail(String email);
+ 
+ }
+Index: Friday Spring/src/main/java/org/spring/security/model/ChapterModel.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Friday Spring/src/main/java/org/spring/security/model/ChapterModel.java b/Friday Spring/src/main/java/org/spring/security/model/ChapterModel.java
+--- a/Friday Spring/src/main/java/org/spring/security/model/ChapterModel.java	(revision de3afa3d3beb56798b12377bdae6987526e37667)
++++ b/Friday Spring/src/main/java/org/spring/security/model/ChapterModel.java	(date 1671279453937)
+@@ -1,8 +1,7 @@
+ package org.spring.security.model;
+ 
+-import org.bson.types.ObjectId;
++
+ import org.spring.security.beans.QuestionAndAnswer;
+-import org.springframework.data.mongodb.core.mapping.DocumentReference;
+ 
+ import java.util.List;
+ 
+Index: Friday Spring/src/main/java/org/spring/security/beans/Privilege.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Friday Spring/src/main/java/org/spring/security/beans/Privilege.java b/Friday Spring/src/main/java/org/spring/security/beans/Privilege.java
+--- a/Friday Spring/src/main/java/org/spring/security/beans/Privilege.java	(revision de3afa3d3beb56798b12377bdae6987526e37667)
++++ b/Friday Spring/src/main/java/org/spring/security/beans/Privilege.java	(date 1671278621180)
+@@ -1,16 +1,16 @@
+ package org.spring.security.beans;
+ 
+-import org.springframework.data.annotation.Id;
+-import org.springframework.data.mongodb.core.mapping.Document;
+-import org.springframework.data.mongodb.core.mapping.Field;
+-
++import javax.persistence.Entity;
++import javax.persistence.GeneratedValue;
++import javax.persistence.GenerationType;
++import javax.persistence.Id;
+ import java.io.Serializable;
+ 
+-@Document(collection = "friday_privilege")
++@Entity(name = "friday_privilege")
+ public class Privilege implements Serializable {
+ 
+     @Id
+-    @Field("_id")
++    @GeneratedValue(strategy = GenerationType.AUTO)
+     private Long id;
+ 
+     private String name;
+Index: Friday Spring/src/main/java/org/spring/security/beans/Chapter.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Friday Spring/src/main/java/org/spring/security/beans/Chapter.java b/Friday Spring/src/main/java/org/spring/security/beans/Chapter.java
+--- a/Friday Spring/src/main/java/org/spring/security/beans/Chapter.java	(revision de3afa3d3beb56798b12377bdae6987526e37667)
++++ b/Friday Spring/src/main/java/org/spring/security/beans/Chapter.java	(date 1671279207208)
+@@ -1,30 +1,19 @@
+ package org.spring.security.beans;
+ 
+-import org.bson.types.ObjectId;
+-import org.springframework.data.annotation.Id;
+-import org.springframework.data.mongodb.core.mapping.*;
+-
++import javax.persistence.*;
+ import java.util.List;
+ 
+-@Document(collection = "friday_chapter")
++@Entity(name = "friday_chapter")
+ public class Chapter {
+     @Id
+-    @Field("_id")
+-    @MongoId(value = FieldType.OBJECT_ID)
+-    private ObjectId id;
++    @GeneratedValue(strategy = GenerationType.AUTO)
++    private long id;
+ 
+     private String name;
+ 
+-    @DocumentReference(lazy = true)
++    @OneToMany
+     List<QuestionAndAnswer> questionAndAnswerList;
+ 
+-    public ObjectId getId() {
+-        return id;
+-    }
+-
+-    public void setId(ObjectId id) {
+-        this.id = id;
+-    }
+ 
+     public String getName() {
+         return name;
+@@ -42,6 +31,14 @@
+         this.questionAndAnswerList = questionAndAnswerList;
+     }
+ 
++    public long getId() {
++        return id;
++    }
++
++    public void setId(long id) {
++        this.id = id;
++    }
++
+     @Override
+     public String toString() {
+         return "Chapter{" +
+Index: Friday Spring/src/main/java/org/spring/security/repository/RoleRepository.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Friday Spring/src/main/java/org/spring/security/repository/RoleRepository.java b/Friday Spring/src/main/java/org/spring/security/repository/RoleRepository.java
+--- a/Friday Spring/src/main/java/org/spring/security/repository/RoleRepository.java	(revision de3afa3d3beb56798b12377bdae6987526e37667)
++++ b/Friday Spring/src/main/java/org/spring/security/repository/RoleRepository.java	(date 1671279437772)
+@@ -1,8 +1,8 @@
+ package org.spring.security.repository;
+ 
+ import org.spring.security.beans.Role;
+-import org.springframework.data.mongodb.repository.MongoRepository;
++import org.springframework.data.jpa.repository.JpaRepository;
+ 
+-public interface RoleRepository extends MongoRepository<Role,Long> {
++public interface RoleRepository extends JpaRepository<Role,Long> {
+     public Role findByName(String name);
+ }
+Index: Friday Spring/src/main/java/org/spring/security/model/BookModel.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Friday Spring/src/main/java/org/spring/security/model/BookModel.java b/Friday Spring/src/main/java/org/spring/security/model/BookModel.java
+--- a/Friday Spring/src/main/java/org/spring/security/model/BookModel.java	(revision de3afa3d3beb56798b12377bdae6987526e37667)
++++ b/Friday Spring/src/main/java/org/spring/security/model/BookModel.java	(date 1671279462255)
+@@ -1,9 +1,7 @@
+ package org.spring.security.model;
+ 
+-import org.bson.types.ObjectId;
++
+ import org.spring.security.beans.Chapter;
+-import org.springframework.data.mongodb.core.mapping.DocumentReference;
+-
+ import java.util.List;
+ 
+ public class BookModel {
+Index: Friday Spring/src/main/java/org/spring/security/beans/Role.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Friday Spring/src/main/java/org/spring/security/beans/Role.java b/Friday Spring/src/main/java/org/spring/security/beans/Role.java
+--- a/Friday Spring/src/main/java/org/spring/security/beans/Role.java	(revision de3afa3d3beb56798b12377bdae6987526e37667)
++++ b/Friday Spring/src/main/java/org/spring/security/beans/Role.java	(date 1671279803131)
+@@ -1,24 +1,27 @@
+ package org.spring.security.beans;
+ 
+-import org.springframework.data.annotation.Id;
+-import org.springframework.data.mongodb.core.mapping.Document;
+-import org.springframework.data.mongodb.core.mapping.Field;
+ import org.springframework.security.core.GrantedAuthority;
+ 
++import javax.persistence.*;
+ import java.util.Collection;
++import java.util.List;
+ 
+-@Document(collection = "friday_role")
++@Entity(name = "friday_role")
+ public class Role implements GrantedAuthority {
+ 
+     @Id
+-    @Field("_id")
++    @GeneratedValue(strategy = GenerationType.AUTO)
+     private Long id;
+ 
+     private String name;
++    @ManyToMany(mappedBy = "roles")
++    private List<User> users;
+ 
+-    private Collection<Privilege> privileges;
++    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
++    @JoinColumn(name="privileges_id")
++    private List<Privilege> privileges;
+ 
+-    public Role(String name,Collection<Privilege> privilegeCollection){
++    public Role(String name,List<Privilege> privilegeCollection){
+         this.name=name;
+         this.privileges=privilegeCollection;
+     }
+@@ -40,16 +43,24 @@
+         this.name = name;
+     }
+ 
++    public Collection<User> getUsers() {
++        return users;
++    }
++
++    public void setUsers(List<User> users) {
++        this.users = users;
++    }
++
+     public Collection<Privilege> getPrivileges() {
+         return privileges;
+     }
+ 
+-    public void setPrivileges(Collection<Privilege> privileges) {
++    public void setPrivileges(List<Privilege> privileges) {
+         this.privileges = privileges;
+     }
+ 
+     @Override
+     public String getAuthority() {
+-        return this.name;
++        return name;
+     }
+ }
+\ No newline at end of file
+Index: Friday Spring/src/main/java/org/spring/security/repository/PrivilegeRepository.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Friday Spring/src/main/java/org/spring/security/repository/PrivilegeRepository.java b/Friday Spring/src/main/java/org/spring/security/repository/PrivilegeRepository.java
+--- a/Friday Spring/src/main/java/org/spring/security/repository/PrivilegeRepository.java	(revision de3afa3d3beb56798b12377bdae6987526e37667)
++++ b/Friday Spring/src/main/java/org/spring/security/repository/PrivilegeRepository.java	(date 1671279425294)
+@@ -1,8 +1,8 @@
+ package org.spring.security.repository;
+ 
+ import org.spring.security.beans.Privilege;
+-import org.springframework.data.mongodb.repository.MongoRepository;
++import org.springframework.data.jpa.repository.JpaRepository;
+ 
+-public interface PrivilegeRepository extends MongoRepository<Privilege,Long> {
++public interface PrivilegeRepository extends JpaRepository<Privilege,Long> {
+     public Privilege findByName(String name);
+ }
+Index: Friday Spring/src/main/java/org/spring/security/beans/Book.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Friday Spring/src/main/java/org/spring/security/beans/Book.java b/Friday Spring/src/main/java/org/spring/security/beans/Book.java
+--- a/Friday Spring/src/main/java/org/spring/security/beans/Book.java	(revision de3afa3d3beb56798b12377bdae6987526e37667)
++++ b/Friday Spring/src/main/java/org/spring/security/beans/Book.java	(date 1671281290473)
+@@ -1,30 +1,27 @@
+ package org.spring.security.beans;
+ 
+ import com.fasterxml.jackson.annotation.JsonIgnore;
+-import org.bson.types.ObjectId;
+-import org.springframework.data.annotation.Id;
+-import org.springframework.data.mongodb.core.mapping.*;
+ 
++import javax.persistence.*;
+ import java.util.List;
+ 
+-@Document(collection = "friday_book")
++@Entity(name = "friday_book")
+ public class Book {
+     @Id
+-    @Field("_id")
+-    @MongoId(value = FieldType.OBJECT_ID)
+-    private ObjectId id;
++    @GeneratedValue(strategy = GenerationType.AUTO)
++    private Long id;
+ 
+     private String name;
+ 
+-    @JsonIgnore
+-    @DocumentReference(lazy = true)
++    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
++    @JoinColumn(name="privileges_id")
+     private List<Chapter> chapterList;
+ 
+-    public ObjectId getId() {
++    public Long getId() {
+         return id;
+     }
+ 
+-    public void setId(ObjectId id) {
++    public void setId(Long id) {
+         this.id = id;
+     }
+ 
+Index: Friday Spring/src/main/java/org/spring/security/SpringSecurityDemoApplication.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Friday Spring/src/main/java/org/spring/security/SpringSecurityDemoApplication.java b/Friday Spring/src/main/java/org/spring/security/SpringSecurityDemoApplication.java
+--- a/Friday Spring/src/main/java/org/spring/security/SpringSecurityDemoApplication.java	(revision de3afa3d3beb56798b12377bdae6987526e37667)
++++ b/Friday Spring/src/main/java/org/spring/security/SpringSecurityDemoApplication.java	(date 1671279613621)
+@@ -5,11 +5,11 @@
+ import org.springframework.boot.autoconfigure.SpringBootApplication;
+ import org.springframework.boot.autoconfigure.domain.EntityScan;
+ import org.springframework.context.annotation.ComponentScan;
+-import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
++import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+ 
+ @SpringBootApplication
+ @ComponentScan("org.spring.security")
+-@EnableMongoRepositories(basePackages = "org.spring.security.repository")
++@EnableJpaRepositories(basePackages = "org.spring.security.repository")
+ @EnableAutoConfiguration
+ @EntityScan(basePackages = {"org.spring.security"})
+ public class SpringSecurityDemoApplication {
+Index: Friday Spring/src/main/java/org/spring/security/beans/QuestionAndAnswer.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Friday Spring/src/main/java/org/spring/security/beans/QuestionAndAnswer.java b/Friday Spring/src/main/java/org/spring/security/beans/QuestionAndAnswer.java
+--- a/Friday Spring/src/main/java/org/spring/security/beans/QuestionAndAnswer.java	(revision de3afa3d3beb56798b12377bdae6987526e37667)
++++ b/Friday Spring/src/main/java/org/spring/security/beans/QuestionAndAnswer.java	(date 1671278902296)
+@@ -1,11 +1,16 @@
+ package org.spring.security.beans;
+ 
+-import org.springframework.data.annotation.Id;
+-import org.springframework.data.mongodb.core.mapping.Field;
++
+ 
++import javax.persistence.Entity;
++import javax.persistence.GeneratedValue;
++import javax.persistence.GenerationType;
++import javax.persistence.Id;
++
++@Entity(name = "QuestionAndAnswer")
+ public class QuestionAndAnswer {
+     @Id
+-    @Field("_id")
++    @GeneratedValue(strategy = GenerationType.AUTO)
+     private String id;
+ 
+     private String question;
+Index: Friday Spring/src/main/java/org/spring/security/controller/BookRestController.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Friday Spring/src/main/java/org/spring/security/controller/BookRestController.java b/Friday Spring/src/main/java/org/spring/security/controller/BookRestController.java
+--- a/Friday Spring/src/main/java/org/spring/security/controller/BookRestController.java	(revision de3afa3d3beb56798b12377bdae6987526e37667)
++++ b/Friday Spring/src/main/java/org/spring/security/controller/BookRestController.java	(date 1671280900763)
+@@ -38,7 +38,7 @@
+     }
+ 
+     @GetMapping("/getBookById")
+-    public BookModel getBookById(@RequestParam("id") String id) {
++    public BookModel getBookById(@RequestParam("id") Long id) {
+        Optional<Book> bookOptional= bookApiService.getBookById(id);
+         return bookOptional.isPresent()?CustomObjectMapper.customObjectMapper.getBookModelFromBook(bookOptional.get()):null;
+     }
+@@ -50,7 +50,7 @@
+     }
+ 
+     @DeleteMapping("/deleteBookById")
+-    public FridayResponse deleteBookById(@RequestParam("id") String id) {
++    public FridayResponse deleteBookById(@RequestParam("id") Long id) {
+         return bookApiService.deleteBookById(id);
+     }
+ 
+Index: Friday Spring/src/main/java/org/spring/security/controller/ChapterRestController.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Friday Spring/src/main/java/org/spring/security/controller/ChapterRestController.java b/Friday Spring/src/main/java/org/spring/security/controller/ChapterRestController.java
+--- a/Friday Spring/src/main/java/org/spring/security/controller/ChapterRestController.java	(revision de3afa3d3beb56798b12377bdae6987526e37667)
++++ b/Friday Spring/src/main/java/org/spring/security/controller/ChapterRestController.java	(date 1671280933244)
+@@ -30,14 +30,14 @@
+ 
+ 
+     @PostMapping("/addChapter")
+-    public ChapterModel addChapter(@RequestBody Chapter chapter, @RequestParam("bookId") String bookId) {
++    public ChapterModel addChapter(@RequestBody Chapter chapter, @RequestParam("bookId") Long bookId) {
+         logger.info("/addChapter : bookId : {} ",bookId);
+ 
+         return CustomObjectMapper.customObjectMapper.getChapterModelFromChapter(chapterApiService.addChapter(chapter,bookId));
+     }
+ 
+     @GetMapping("/getChapterListByBookId")
+-    public List<ChapterModel> getChapterListByBookId(@RequestParam("bookId") String bookId) {
++    public List<ChapterModel> getChapterListByBookId(@RequestParam("bookId") Long bookId) {
+         logger.info("getChapterListByBookId : bookId : {}",bookId);
+         return bookApiService.getChapterListByBookId(bookId).stream().map(chapter->CustomObjectMapper.customObjectMapper.getChapterModelFromChapter(chapter)).collect(Collectors.toList());
+     }
+Index: Friday Spring/src/main/java/org/spring/security/mappers/CustomObjectMapper.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Friday Spring/src/main/java/org/spring/security/mappers/CustomObjectMapper.java b/Friday Spring/src/main/java/org/spring/security/mappers/CustomObjectMapper.java
+--- a/Friday Spring/src/main/java/org/spring/security/mappers/CustomObjectMapper.java	(revision de3afa3d3beb56798b12377bdae6987526e37667)
++++ b/Friday Spring/src/main/java/org/spring/security/mappers/CustomObjectMapper.java	(date 1671279540089)
+@@ -1,6 +1,5 @@
+ package org.spring.security.mappers;
+ 
+-import org.bson.types.ObjectId;
+ import org.mapstruct.*;
+ import org.mapstruct.factory.Mappers;
+ import org.spring.security.beans.Book;
+@@ -10,7 +9,7 @@
+ import org.spring.security.model.ChapterModel;
+ import org.spring.security.model.UserModel;
+ 
+-@Mapper(componentModel = "spring",nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS)
++//@Mapper(componentModel = "spring",nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS)
+ public interface CustomObjectMapper {
+     CustomObjectMapper customObjectMapper= Mappers.getMapper(CustomObjectMapper.class);
+ 
+@@ -27,11 +26,11 @@
+     })
+     User getUserFromUserModel(UserModel userModel);
+ 
+-    @Named("StringToObjectId")
++   /* @Named("StringToObjectId")
+     default ObjectId stringToObjectId(String id){
+         return new ObjectId(id);
+     }
+-
++*/
+     @Mappings({
+             @Mapping(source = "id",target = "id",qualifiedByName= "ObjectIdToString"),
+             @Mapping(source = "name",target = "name"),
+@@ -44,12 +43,12 @@
+     })
+     UserModel getUserModelFromUser(User user);
+ 
+-    @Named("ObjectIdToString")
++    /*@Named("ObjectIdToString")
+     default String objectIdToString(ObjectId objectId){
+         return objectId.toString();
+     }
+ 
+-
++*/
+     @Mappings({
+             @Mapping(source = "id",target = "id",qualifiedByName = "StringToObjectId"),
+     })
+Index: Friday Spring/src/main/resources/application.properties
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>ISO-8859-1
+===================================================================
+diff --git a/Friday Spring/src/main/resources/application.properties b/Friday Spring/src/main/resources/application.properties
+--- a/Friday Spring/src/main/resources/application.properties	(revision de3afa3d3beb56798b12377bdae6987526e37667)
++++ b/Friday Spring/src/main/resources/application.properties	(date 1671278123158)
+@@ -1,9 +1,16 @@
+ spring.mvc.view.prefix=/WEB-INF/jsp/
+ spring.mvc.view.suffix=.jsp
+ 
+-spring.data.mongodb.host=localhost
+-spring.data.mongodb.port=27017
+-spring.data.mongodb.database=friday
++#spring.data.mongodb.host=localhost
++#spring.data.mongodb.port=27017
++#spring.data.mongodb.database=friday
++
++spring.datasource.driver-class-name=oracle.jdbc.driver.OracleDriver
++spring.datasource.username=system
++spring.datasource.password=1234
++spring.datasource.url=jdbc:oracle:thin:@localhost:1521:XE
++
++
+ spring.jpa.show-sql=true
+ spring.jpa.generate-ddl=true
+ spring.jpa.hibernate.ddl-auto = create
+Index: Friday Spring/src/main/java/org/spring/security/repository/ChapterRepository.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Friday Spring/src/main/java/org/spring/security/repository/ChapterRepository.java b/Friday Spring/src/main/java/org/spring/security/repository/ChapterRepository.java
+--- a/Friday Spring/src/main/java/org/spring/security/repository/ChapterRepository.java	(revision de3afa3d3beb56798b12377bdae6987526e37667)
++++ b/Friday Spring/src/main/java/org/spring/security/repository/ChapterRepository.java	(date 1671279412739)
+@@ -1,10 +1,10 @@
+ package org.spring.security.repository;
+ 
+ import org.spring.security.beans.Chapter;
+-import org.springframework.data.mongodb.repository.MongoRepository;
++import org.springframework.data.jpa.repository.JpaRepository;
+ import org.springframework.stereotype.Repository;
+ 
+ @Repository
+-public interface ChapterRepository extends MongoRepository<Chapter,String> {
++public interface ChapterRepository extends JpaRepository<Chapter,String> {
+ 
+ }
+Index: Friday Spring/src/main/java/org/spring/security/services/ChapterApiService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Friday Spring/src/main/java/org/spring/security/services/ChapterApiService.java b/Friday Spring/src/main/java/org/spring/security/services/ChapterApiService.java
+--- a/Friday Spring/src/main/java/org/spring/security/services/ChapterApiService.java	(revision de3afa3d3beb56798b12377bdae6987526e37667)
++++ b/Friday Spring/src/main/java/org/spring/security/services/ChapterApiService.java	(date 1671280917171)
+@@ -1,12 +1,10 @@
+ package org.spring.security.services;
+ 
+-import org.bson.types.ObjectId;
+ import org.spring.security.beans.Book;
+ import org.spring.security.beans.Chapter;
+ import org.spring.security.exception.FridayException;
+ import org.spring.security.model.FridayResponse;
+ import org.spring.security.repository.BookRepository;
+-import org.spring.security.repository.BookRepositoryCustomImp;
+ import org.spring.security.repository.ChapterRepository;
+ import org.springframework.beans.factory.annotation.Autowired;
+ import org.springframework.stereotype.Component;
+@@ -23,9 +21,7 @@
+     @Autowired
+     ChapterRepository chapterRepository;
+ 
+-    @Autowired
+-    BookRepositoryCustomImp bookRepositoryCustomImp;
+-    public Chapter addChapter(Chapter chapter, String bookId) {
++    public Chapter addChapter(Chapter chapter, Long bookId) {
+ 
+         Optional<Book> savedBookOptional=bookRepository.findById(bookId);
+         if(savedBookOptional.isPresent()){
+Index: Friday Spring/pom.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Friday Spring/pom.xml b/Friday Spring/pom.xml
+--- a/Friday Spring/pom.xml	(revision de3afa3d3beb56798b12377bdae6987526e37667)
++++ b/Friday Spring/pom.xml	(date 1671278136913)
+@@ -121,10 +121,10 @@
+ 			<scope>runtime</scope>
+ 			<optional>true</optional>
+ 		</dependency>
+-		<dependency>
++		<!--<dependency>
+ 			<groupId>org.springframework.boot</groupId>
+ 			<artifactId>spring-boot-starter-data-mongodb</artifactId>
+-		</dependency>
++		</dependency>-->
+ 
+ 		<dependency>
+ 			<groupId>org.aspectj</groupId>
+Index: Friday Spring/src/main/java/org/spring/security/repository/BookRepository.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Friday Spring/src/main/java/org/spring/security/repository/BookRepository.java b/Friday Spring/src/main/java/org/spring/security/repository/BookRepository.java
+--- a/Friday Spring/src/main/java/org/spring/security/repository/BookRepository.java	(revision de3afa3d3beb56798b12377bdae6987526e37667)
++++ b/Friday Spring/src/main/java/org/spring/security/repository/BookRepository.java	(date 1671279885802)
+@@ -1,14 +1,12 @@
+ package org.spring.security.repository;
+ 
+-import org.bson.types.ObjectId;
+ import org.spring.security.beans.Book;
+-import org.springframework.data.mongodb.repository.MongoRepository;
+-import org.springframework.data.mongodb.repository.Query;
++import org.springframework.data.jpa.repository.JpaRepository;
+ import org.springframework.stereotype.Repository;
+ 
+ import java.util.Optional;
+ 
+ @Repository
+-public interface BookRepository extends MongoRepository<Book,String> {
++public interface BookRepository extends JpaRepository<Book,Long> {
+ 
+ }
+Index: Friday Spring/src/main/java/org/spring/security/util/FridayConstant.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Friday Spring/src/main/java/org/spring/security/util/FridayConstant.java b/Friday Spring/src/main/java/org/spring/security/util/FridayConstant.java
+--- a/Friday Spring/src/main/java/org/spring/security/util/FridayConstant.java	(revision de3afa3d3beb56798b12377bdae6987526e37667)
++++ b/Friday Spring/src/main/java/org/spring/security/util/FridayConstant.java	(date 1671279609246)
+@@ -1,31 +1,9 @@
+ package org.spring.security.util;
+ 
+-import org.bson.types.ObjectId;
+ import org.spring.security.beans.User;
+ import org.spring.security.model.UserModel;
+ 
+ public class FridayConstant {
+     public static final String NOT_VALID_TOKEN="Not a valid Token";
+ 
+-    public static UserModel getUserModelFromUser(User user){
+-        UserModel userModel=new UserModel();
+-        userModel.setId(user.getId().toString());
+-        userModel.setEmail(user.getEmail());
+-        userModel.setName(user.getName());
+-        userModel.setStdInClass(user.getStdInClass());
+-        userModel.setBookCollection(user.getBookCollection());
+-        userModel.setRoles(user.getRoles());
+-        return userModel;
+-    }
+-
+-    public static User getUserfromUserModel(UserModel userModel){
+-        User user=new User();
+-        user.setId(new ObjectId(userModel.getId()));
+-        user.setEmail(userModel.getEmail());
+-        user.setName(userModel.getName());
+-        user.setStdInClass(userModel.getStdInClass());
+-        user.setBookCollection(userModel.getBookCollection());
+-        user.setRoles(userModel.getRoles());
+-        return user;
+-    }
+ }
+Index: Friday Spring/src/main/java/org/spring/security/beans/User.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Friday Spring/src/main/java/org/spring/security/beans/User.java b/Friday Spring/src/main/java/org/spring/security/beans/User.java
+--- a/Friday Spring/src/main/java/org/spring/security/beans/User.java	(revision de3afa3d3beb56798b12377bdae6987526e37667)
++++ b/Friday Spring/src/main/java/org/spring/security/beans/User.java	(date 1671281153080)
+@@ -1,37 +1,38 @@
+ package org.spring.security.beans;
+ 
+-import com.fasterxml.jackson.annotation.JsonIgnore;
+-import org.bson.types.ObjectId;
+-import org.springframework.data.annotation.Id;
+-import org.springframework.data.annotation.ReadOnlyProperty;
+-import org.springframework.data.mongodb.core.index.Indexed;
+-import org.springframework.data.mongodb.core.mapping.*;
+-
+-import javax.annotation.Generated;
+-import javax.persistence.GeneratedValue;
+-import javax.persistence.GenerationType;
++import javax.persistence.*;
+ import java.util.Collection;
+ import java.util.List;
+ 
+-@Document(collection = "friday_user")
++@Table(name = "friday_user")
++@Entity
+ public class User  {
+ 
+     @Id
+-    @Field("_id")
+-    @MongoId(value = FieldType.OBJECT_ID)
+-    private ObjectId id;
++    @GeneratedValue(strategy = GenerationType.AUTO)
++    private long id;
+ 
+     private String name;
+-    @Indexed(unique = true)
+     private String email;
+     private String password;
+     private boolean blocked;
+     private String stdInClass ;
+-    @DocumentReference
++    @ManyToMany(cascade = {CascadeType.ALL},fetch = FetchType.LAZY)
++    @JoinTable(
++            name = "users_roles",
++            joinColumns = @JoinColumn(
++                    name = "user_id", referencedColumnName = "id"),
++            inverseJoinColumns = @JoinColumn(
++                    name = "role_id", referencedColumnName = "id"))
+     private List<Role> roles;
+ 
+-    @JsonIgnore
+-    @DocumentReference(lazy = true)
++    @OneToMany(cascade = {CascadeType.ALL},fetch = FetchType.LAZY)
++    @JoinTable(
++            name = "users_books",
++            joinColumns = @JoinColumn(
++                    name = "user_id", referencedColumnName = "id"),
++            inverseJoinColumns = @JoinColumn(
++                    name = "book_id", referencedColumnName = "id"))
+     private List<Book> bookCollection;
+ 
+ 
+@@ -40,13 +41,6 @@
+         super();
+     }
+ 
+-    public ObjectId getId() {
+-        return id;
+-    }
+-
+-    public void setId(ObjectId id) {
+-        this.id = id;
+-    }
+ 
+ 
+     public String getEmail() {
+@@ -81,9 +75,7 @@
+         this.stdInClass = stdInClass;
+     }
+ 
+-    public List<Role> getRoles() {
+-        return roles;
+-    }
++
+ 
+     public void setRoles(List<Role> roles) {
+         this.roles = roles;
+@@ -105,6 +97,18 @@
+         this.name = name;
+     }
+ 
++    public long getId() {
++        return id;
++    }
++
++    public void setId(long id) {
++        this.id = id;
++    }
++
++    public List<Role> getRoles() {
++        return roles;
++    }
++
+     @Override
+     public String toString() {
+         return "User{" +
+Index: Friday Spring/src/main/java/org/spring/security/services/BookApiService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Friday Spring/src/main/java/org/spring/security/services/BookApiService.java b/Friday Spring/src/main/java/org/spring/security/services/BookApiService.java
+--- a/Friday Spring/src/main/java/org/spring/security/services/BookApiService.java	(revision de3afa3d3beb56798b12377bdae6987526e37667)
++++ b/Friday Spring/src/main/java/org/spring/security/services/BookApiService.java	(date 1671280877543)
+@@ -29,10 +29,6 @@
+ 
+     public Book addBook(Book book,String email){
+         Book savedBook=bookRepository.save(book);
+-        logger.info("savedBook : {}",savedBook.getId());
+-        User user=userRepository.findByEmail(email);
+-        user.getBookCollection().add(savedBook);
+-        userRepository.save(user);
+         return savedBook;
+     }
+ 
+@@ -40,13 +36,13 @@
+         return userRepository.findByEmail(email).getBookCollection();
+     }
+ 
+-    public Optional<Book> getBookById(String id) {
++    public Optional<Book> getBookById(Long id) {
+         return bookRepository.findById(id);
+     }
+ 
+     public Book updateBook(Book book) {
+-        logger.info("BookApiService : updateBook(): bookId : {}",book.getId().toString());
+-        Optional<Book> existingBookOptional=bookRepository.findById(book.getId().toString());
++        logger.info("BookApiService : updateBook(): bookId : {}",book.getId());
++        Optional<Book> existingBookOptional=bookRepository.findById(book.getId());
+         if(existingBookOptional.isPresent()){
+             Book existingBook=existingBookOptional.get();
+             existingBook.setName(book.getName());
+@@ -57,12 +53,12 @@
+         }
+     }
+ 
+-    public FridayResponse deleteBookById(String id) {
++    public FridayResponse deleteBookById(Long id) {
+         bookRepository.deleteById(id);
+         return new FridayResponse("Book is Deleted SuccessFully");
+     }
+ 
+-    public List<Chapter> getChapterListByBookId(String bookId) {
++    public List<Chapter> getChapterListByBookId(Long bookId) {
+         return bookRepository.findById(bookId).get().getChapterList();
+     }
+ 
